@@ -1,6 +1,6 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Release Action'
+description: 'Release automation action'
+author: 'talview'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
@@ -9,16 +9,40 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
-    required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  version:
+    description: 'semver: major, minor or patch'
+    required: false
+    default: 'minor'
+  base:
+    description: "branch to merge back code to (i.e. develop)"
+    default: "develop"
+    required: false
+  assets:
+    description: "glob for assets to publish in release"
+    default: 'dist/release.zip'
+    required: false
 
 runs:
-  using: node20
+  using: 'composite'
   main: dist/index.js
+  steps:
+    - name: Generate a token
+      id: generate-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ vars.TALVIEW_BOT_ID }}
+        private-key: ${{ secrets.TALVIEW_BOT_KEY }}
+    - name: git config
+      run: |
+        git config user.name "${GITHUB_ACTOR}"
+        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+    - name:
+      using: 'node20'
+      main: 'dist/index.js'
+      with:
+        workspace: ${{ github.workspace }}
+        version: ${{ inputs.version}}
+        base: ${{ inputs.base}}
+        assets: ${{ inputs.assets}}
+      env:
+        GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}

@@ -1,5 +1,7 @@
 import * as core from '@actions/core'
-import { wait } from './wait'
+// @ts-ignore
+import release from 'release-it'
+import { run as gh } from './gh-ops'
 
 /**
  * The main function for the action.
@@ -7,20 +9,46 @@ import { wait } from './wait'
  */
 export async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
+    const version: string = core.getInput('version')
+    const base: string = core.getInput('base')
+    const workspace: string = core.getInput('workspace')
+    const assets: string = core.getInput('assets')
 
-    // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    core.debug(`Waiting ${ms} milliseconds ...`)
-
-    // Log the current timestamp, wait, then log the new timestamp
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    // Set outputs for other workflow steps to use
-    core.setOutput('time', new Date().toTimeString())
+    await gh({ base, workspace })
+    await publish({ version, assets })
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
   }
+}
+
+export async function publish({ version, assets }: any) {
+  core.debug(version)
+  const options = {
+    src: {
+      commitArgs: '-S'
+    },
+    hooks: {
+      'after:bump': 'auto-changelog -t keepachangelog -p -u'
+    },
+    github: {
+      releaseName: 'Release: ${version}',
+      release: true,
+      autoGenerate: true,
+      assets: [assets],
+      comments: {
+        submit: true
+      }
+    },
+    git: {
+      commit: false,
+      tag: false,
+      push: false
+    },
+    npm: {
+      publish: false
+    }
+  }
+  const output = await release(options)
+  core.info(output.message)
 }
