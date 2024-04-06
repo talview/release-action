@@ -19,7 +19,7 @@ inputs:
     required: false
   assets:
     description: "glob for assets to publish in release"
-    default: 'dist/release.zip'
+    default: null
     required: false
 
 runs:
