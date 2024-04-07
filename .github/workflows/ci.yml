@@ -49,7 +49,7 @@ jobs:
   test:
     name: TypeScript Tests
     runs-on: self-hosted
-    needs: ['lint', 'analyze']
+    needs: ['lint']
     steps:
       - name: Checkout
         id: checkout
