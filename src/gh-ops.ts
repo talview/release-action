@@ -52,13 +52,13 @@ export async function commit({
     tree
   })
   await ref(
-    `refs/${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`,
+    `${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`,
     c.data.sha
   )
   await ref(`refs/tags/v${data.version}`, c.data.sha)
   if (base) {
     await ref(
-      `refs/${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`,
+      `${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`,
       c.data.sha
     )
   }
