@@ -47,21 +47,27 @@ export async function commit({
   const c: CommitType = await octokit.rest.git.createCommit({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
-    message: `Release :${data.version}`,
+    message: `Release: ${data.version}`,
     parents: [github.context.sha],
     tree
   })
-  await ref(github.context.ref, c.data.sha)
+  await ref(
+    `${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`,
+    c.data.sha
+  )
+  await ref(`tags/v${data.version}`, c.data.sha)
   if (base) {
-    await ref(base, c.data.sha)
+    await ref(
+      `${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`,
+      c.data.sha
+    )
   }
 
   return c.data.sha
 }
 
-export async function ref(base: string, sha: string): Promise<string> {
+export async function ref(r: string, sha: string): Promise<string> {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
-  const r = `${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`
   let res
   let ret
   try {

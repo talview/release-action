@@ -48226,19 +48226,19 @@ async function commit({ base, workspace }) {
     const c = await octokit.rest.git.createCommit({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
-        message: `Release :${data.version}`,
+        message: `Release: ${data.version}`,
         parents: [github.context.sha],
         tree
     });
-    await ref(github.context.ref, c.data.sha);
+    await ref(`${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
+    await ref(`tags/v${data.version}`, c.data.sha);
     if (base) {
-        await ref(base, c.data.sha);
+        await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
     }
     return c.data.sha;
 }
-async function ref(base, sha) {
+async function ref(r, sha) {
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
-    const r = `${(0,lodash.get)(base.match(new RegExp('(heads)/([^s]+)')), '0')}`;
     let res;
     let ret;
     try {

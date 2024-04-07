@@ -29,9 +29,11 @@ runs:
   steps:
     - name: Use Node.js 20.x
       uses: actions/setup-node@v4
+      if: contains(github.actor,'bot') == false
       with:
         node-version: 20.x
     - name: Generate a token
+      if: contains(github.actor,'bot') == false
       id: generate-token
       uses: actions/create-github-app-token@v1
       with:
@@ -39,11 +41,13 @@ runs:
         private-key: ${{ inputs.BOT_KEY }}
     - name: git config
       shell: bash
+      if: contains(github.actor,'bot') == false
       run: |
         git config user.name "${GITHUB_ACTOR}"
         git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
     - name: publish
       shell: bash
+      if: contains(github.actor,'bot') == false
       run: |
         npm install -g auto-changelog
         cd ${WORKSPACE}
