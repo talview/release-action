@@ -48223,12 +48223,11 @@ async function commit({ base, workspace }) {
     const tree = await createTree(workspace);
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
     const data = JSON.parse(external_fs_default().readFileSync(`${workspace}/package.json`).toString());
-    console.log(github.context.sha);
     const c = await octokit.rest.git.createCommit({
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         message: `Release :${data.version}`,
-        base_commit: github.context.sha,
+        parents: [github.context.sha],
         tree
     });
     await ref(github.context.ref, c.data.sha);
