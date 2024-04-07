@@ -1,0 +1,59 @@
+name: 'Release Action'
+description: 'Release automation action'
+author: 'talview'
+
+branding:
+  icon: 'heart'
+  color: 'red'
+
+inputs:
+  version:
+    description: 'semver: major, minor or patch'
+    required: false
+    default: 'minor'
+  base:
+    description: 'branch to merge back code to (i.e. develop)'
+    default: 'refs/heads/develop'
+    required: false
+  assets:
+    description: 'glob for assets to publish in release'
+    required: false
+  BOT_ID:
+    description: 'bot id to run with'
+    required: true
+  BOT_KEY:
+    description: 'bot ssh key to generate token'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20.x
+    - name: Generate a token
+      id: generate-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ inputs.BOT_ID }}
+        private-key: ${{ inputs.BOT_KEY }}
+    - name: git config
+      shell: bash
+      run: |
+        git config user.name "${GITHUB_ACTOR}"
+        git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+    - name: publish
+      shell: bash
+      run: |
+        npm install -g auto-changelog
+        cd ${WORKSPACE}
+        npm version ${VERSION}
+        auto-changelog -t keepachangelog -p -u
+        mv dist/index.js ${WORKSPACE}/_release.js
+        node ${WORKSPACE}/_release.js
+      env:
+        WORKSPACE: ${{ github.workspace }}
+        VERSION: ${{ inputs.version }}
+        BASE: ${{ inputs.base }}
+        ASSETS: ${{ inputs.assets }}
+        GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}

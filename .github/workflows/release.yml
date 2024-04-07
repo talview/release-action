@@ -1,0 +1,21 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  run:
+    runs-on: self-hosted
+    if: contains(github.event.head_commit.message, 'skip ci') == false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: ./
+        with:
+          BOT_ID: ${{ vars.TALVIEW_BOT_ID }}
+          BOT_KEY: ${{ secrets.TALVIEW_BOT_KEY }}
