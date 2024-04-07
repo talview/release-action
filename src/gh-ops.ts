@@ -44,6 +44,7 @@ export async function commit({
   const data = JSON.parse(
     fs.readFileSync(`${workspace}/package.json`).toString()
   )
+  console.log(github.context.sha)
   const c: CommitType = await octokit.rest.git.createCommit({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
@@ -79,7 +80,6 @@ export async function ref(base: string, sha: string): Promise<string> {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       ref: r,
-      force: true, // ?
       sha
     })
   } else {
