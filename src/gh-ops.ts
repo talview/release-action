@@ -52,13 +52,13 @@ export async function commit({
     tree
   })
   await ref(
-    `${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`,
+    `refs/${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`,
     c.data.sha
   )
-  await ref(`tags/v${data.version}`, c.data.sha)
+  await ref(`refs/tags/v${data.version}`, c.data.sha)
   if (base) {
     await ref(
-      `${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`,
+      `refs/${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`,
       c.data.sha
     )
   }
@@ -70,6 +70,7 @@ export async function ref(r: string, sha: string): Promise<string> {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
   let res
   let ret
+  console.log(r)
   try {
     res = await octokit.rest.git.getRef({
       owner: github.context.repo.owner,
@@ -79,7 +80,7 @@ export async function ref(r: string, sha: string): Promise<string> {
   } catch {
     // empty
   }
-  console.log(sha)
+
   if (res?.data?.url) {
     ret = await octokit.rest.git.updateRef({
       owner: github.context.repo.owner,

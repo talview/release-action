@@ -48230,10 +48230,10 @@ async function commit({ base, workspace }) {
         parents: [github.context.sha],
         tree
     });
-    await ref(`${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
-    await ref(`tags/v${data.version}`, c.data.sha);
+    await ref(`refs/${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
+    await ref(`refs/tags/v${data.version}`, c.data.sha);
     if (base) {
-        await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
+        await ref(`refs/${(0,lodash.get)(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
     }
     return c.data.sha;
 }
@@ -48241,6 +48241,7 @@ async function ref(r, sha) {
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
     let res;
     let ret;
+    console.log(r);
     try {
         res = await octokit.rest.git.getRef({
             owner: github.context.repo.owner,
@@ -48251,7 +48252,6 @@ async function ref(r, sha) {
     catch {
         // empty
     }
-    console.log(sha);
     if (res?.data?.url) {
         ret = await octokit.rest.git.updateRef({
             owner: github.context.repo.owner,
