@@ -10,12 +10,13 @@ concurrency:
 jobs:
   run:
     runs-on: self-hosted
-    if: contains(github.event.head_commit.message, 'skip ci') == false
+    if: contains(github.event.head_commit.message, 'skip ci') == false || contains(github.actor, 'bot') == false
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - uses: ./
+        if: contains(github.actor, 'bot') == false
         with:
           BOT_ID: ${{ vars.TALVIEW_BOT_ID }}
           BOT_KEY: ${{ secrets.TALVIEW_BOT_KEY }}
