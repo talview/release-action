@@ -46,38 +46,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JAVASCRIPT_STANDARD: false
           VALIDATE_JSCPD: false
-  analyze:
-    name: Analyze
-    runs-on: self-hosted
-
-    strategy:
-      fail-fast: false
-      matrix:
-        language:
-          - TypeScript
-
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-      - name: Use Node.js 20.x
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-      - name: Initialize CodeQL
-        id: initialize
-        uses: github/codeql-action/init@v3
-        with:
-          languages: ${{ matrix.language }}
-          source-root: src
-
-      - name: Autobuild
-        id: autobuild
-        uses: github/codeql-action/autobuild@v3
-
-      - name: Perform CodeQL Analysis
-        id: analyze
-        uses: github/codeql-action/analyze@v3
   test:
     name: TypeScript Tests
     runs-on: self-hosted

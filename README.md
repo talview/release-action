@@ -1,7 +1,6 @@
 ## Release automation action
 
 ![CI](https://github.com/talview/release-action/actions/workflows/ci.yml/badge.svg)
-[![CodeQL](https://github.com/talview/release-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/talview/release-action/actions/workflows/codeql-analysis.yml)
 [![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
 ## Features
