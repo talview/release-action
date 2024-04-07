@@ -1,5 +1,5 @@
 import * as github from '@actions/github'
-import * as core from '@actions/core'
+
 import { GetResponseTypeFromEndpointMethod } from '@octokit/types'
 import { get } from 'lodash'
 import fs from 'fs'
@@ -29,21 +29,11 @@ export async function createTree(workspace: string): Promise<string> {
   return tree.data.sha
 }
 
-export async function commit({
-  base,
-  workspace
-}: {
-  base: string
-  workspace: string
-}): Promise<string> {
+export async function commit({ base, workspace }: { base: string; workspace: string }): Promise<string> {
   const tree = await createTree(workspace)
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
-  type CommitType = GetResponseTypeFromEndpointMethod<
-    typeof octokit.rest.git.createCommit
-  >
-  const data = JSON.parse(
-    fs.readFileSync(`${workspace}/package.json`).toString()
-  )
+  type CommitType = GetResponseTypeFromEndpointMethod<typeof octokit.rest.git.createCommit>
+  const data = JSON.parse(fs.readFileSync(`${workspace}/package.json`).toString())
   const c: CommitType = await octokit.rest.git.createCommit({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
@@ -51,16 +41,10 @@ export async function commit({
     parents: [github.context.sha],
     tree
   })
-  await ref(
-    `${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`,
-    c.data.sha
-  )
+  await ref(`${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha)
   await ref(`refs/tags/v${data.version}`, c.data.sha)
   if (base) {
-    await ref(
-      `${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`,
-      c.data.sha
-    )
+    await ref(`${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha)
   }
 
   return c.data.sha
@@ -100,13 +84,7 @@ export async function ref(r: string, sha: string): Promise<string> {
   return ret.data.ref
 }
 
-export async function run({
-  base,
-  workspace
-}: {
-  base: string
-  workspace: string
-}): Promise<void> {
+export async function run({ base, workspace }: { base: string; workspace: string }): Promise<void> {
   await commit({ base, workspace })
 }
 export default run
