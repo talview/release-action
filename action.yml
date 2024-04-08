@@ -1,4 +1,4 @@
-name: '@talview/release-action'
+name: talview/release-action
 description: 'Release automation action'
 author: 'talview'
 
