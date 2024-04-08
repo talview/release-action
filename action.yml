@@ -48,8 +48,7 @@ runs:
     - name: publish
       shell: bash
       if: contains(github.actor,'bot') == false
-      run: |
-        echo cp ${ACTION_PATH}/index.js ${WORKSPACE}/_release.js 
+      run: | 
         npm install -g auto-changelog
         cp ${ACTION_PATH}/index.js ${WORKSPACE}/_release.js
         cd ${WORKSPACE}
@@ -57,7 +56,7 @@ runs:
         auto-changelog -t keepachangelog -p -u
         node ${WORKSPACE}/_release.js
       env:
-        ACTION_PATH: $${ github.action_path }}
+        ACTION_PATH: ${{ github.action_path }}
         WORKSPACE: ${{ github.workspace }}
         VERSION: ${{ inputs.version }}
         BASE: ${{ inputs.base }}
