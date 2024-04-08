@@ -1,4 +1,5 @@
 import * as github from '@actions/github'
+import * as core from '@actions/core'
 
 import { GetResponseTypeFromEndpointMethod } from '@octokit/types'
 import { get } from 'lodash'
@@ -53,11 +54,11 @@ export async function commit({ base, workspace }: { base: string; workspace: str
   })
 
   if (base) {
-    await ref(`refs/${get(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
+    await ref(`${get(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
   }
-  await ref(`refs/tags/v${data.version}`, c.data.sha)
+  await ref(`tags/v${data.version}`, c.data.sha)
   await createRelease(data.version)
-  await ref(`refs/${get(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
+  await ref(`${get(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
   return c.data.sha
 }
 
@@ -65,7 +66,7 @@ export async function ref(r: string, sha: string): Promise<string> {
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
   let res
   let ret
-  console.log(r)
+  core.info(r)
   try {
     res = await octokit.rest.git.getRef({
       owner: github.context.repo.owner,
@@ -87,7 +88,7 @@ export async function ref(r: string, sha: string): Promise<string> {
     ret = await octokit.rest.git.createRef({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
-      ref: r,
+      ref: `refs/${r}`,
       sha
     })
   }

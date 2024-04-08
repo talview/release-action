@@ -48197,6 +48197,7 @@ var external_fs_default = /*#__PURE__*/__nccwpck_require__.n(external_fs_);
 
 
 
+
 async function createTree(workspace) {
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
     const files = [
@@ -48241,18 +48242,18 @@ async function commit({ base, workspace }) {
         tree
     });
     if (base) {
-        await ref(`refs/${(0,lodash.get)(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
+        await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     }
-    await ref(`refs/tags/v${data.version}`, c.data.sha);
+    await ref(`tags/v${data.version}`, c.data.sha);
     await createRelease(data.version);
-    await ref(`refs/${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
+    await ref(`${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     return c.data.sha;
 }
 async function ref(r, sha) {
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
     let res;
     let ret;
-    console.log(r);
+    core.info(r);
     try {
         res = await octokit.rest.git.getRef({
             owner: github.context.repo.owner,
@@ -48275,7 +48276,7 @@ async function ref(r, sha) {
         ret = await octokit.rest.git.createRef({
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
-            ref: r,
+            ref: `refs/${r}`,
             sha
         });
     }
