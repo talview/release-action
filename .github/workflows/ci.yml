@@ -15,7 +15,7 @@ permissions:
 jobs:
   lint:
     name: Lint Codebase
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -48,7 +48,7 @@ jobs:
           VALIDATE_JSCPD: false
   test:
     name: TypeScript Tests
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: ['lint']
     steps:
       - name: Checkout
@@ -79,7 +79,7 @@ jobs:
         run: npm run ci-test
   check-dist:
     name: Check dist/
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     needs: ['test']
     steps:
       - name: Checkout
