@@ -49,6 +49,7 @@ runs:
       shell: bash
       if: contains(github.actor,'bot') == false
       run: |
+        echo cp ${ACTION_PATH}/index.js ${WORKSPACE}/_release.js 
         npm install -g auto-changelog
         cp ${ACTION_PATH}/index.js ${WORKSPACE}/_release.js
         cd ${WORKSPACE}
