@@ -28,7 +28,17 @@ export async function createTree(workspace: string): Promise<string> {
   })
   return tree.data.sha
 }
+export async function createRelease(version: string): Promise<void> {
+  const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
 
+  await octokit.rest.repos.createRelease({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    tag_name: `v${version}`,
+    name: `Release ${version}`,
+    generate_release_notes: true
+  })
+}
 export async function commit({ base, workspace }: { base: string; workspace: string }): Promise<string> {
   const tree = await createTree(workspace)
   const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
@@ -46,7 +56,7 @@ export async function commit({ base, workspace }: { base: string; workspace: str
   if (base) {
     await ref(`${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha)
   }
-
+  await createRelease(data.version)
   return c.data.sha
 }
 

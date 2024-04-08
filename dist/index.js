@@ -48219,6 +48219,16 @@ async function createTree(workspace) {
     });
     return tree.data.sha;
 }
+async function createRelease(version) {
+    const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
+    await octokit.rest.repos.createRelease({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        tag_name: `v${version}`,
+        name: `Release ${version}`,
+        generate_release_notes: true
+    });
+}
 async function commit({ base, workspace }) {
     const tree = await createTree(workspace);
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
@@ -48235,6 +48245,7 @@ async function commit({ base, workspace }) {
     if (base) {
         await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
     }
+    await createRelease(data.version);
     return c.data.sha;
 }
 async function ref(r, sha) {
