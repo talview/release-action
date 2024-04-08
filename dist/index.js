@@ -48240,12 +48240,12 @@ async function commit({ base, workspace }) {
         parents: [github.context.sha],
         tree
     });
-    await ref(`${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
-    await ref(`refs/tags/v${data.version}`, c.data.sha);
     if (base) {
-        await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha);
+        await ref(`refs/${(0,lodash.get)(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     }
+    await ref(`refs/tags/v${data.version}`, c.data.sha);
     await createRelease(data.version);
+    await ref(`refs/${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     return c.data.sha;
 }
 async function ref(r, sha) {

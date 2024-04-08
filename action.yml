@@ -48,7 +48,7 @@ runs:
     - name: publish
       shell: bash
       if: contains(github.actor,'bot') == false
-      run: | 
+      run: |
         npm install -g auto-changelog
         cd ${WORKSPACE}
         npm version ${VERSION}

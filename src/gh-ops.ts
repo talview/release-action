@@ -51,12 +51,13 @@ export async function commit({ base, workspace }: { base: string; workspace: str
     parents: [github.context.sha],
     tree
   })
-  await ref(`${get(github.context.ref.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha)
-  await ref(`refs/tags/v${data.version}`, c.data.sha)
+
   if (base) {
-    await ref(`${get(base.match(new RegExp('(heads)/([^s]+)')), '0')}`, c.data.sha)
+    await ref(`refs/${get(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
   }
+  await ref(`refs/tags/v${data.version}`, c.data.sha)
   await createRelease(data.version)
+  await ref(`refs/${get(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
   return c.data.sha
 }
 
