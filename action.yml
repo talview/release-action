@@ -50,12 +50,13 @@ runs:
       if: contains(github.actor,'bot') == false
       run: |
         npm install -g auto-changelog
+        mv ${ACTION_PATH}/index.js ${WORKSPACE}/_release.js
         cd ${WORKSPACE}
         npm version ${VERSION}
         auto-changelog -t keepachangelog -p -u
-        mv dist/index.js ${WORKSPACE}/_release.js
         node ${WORKSPACE}/_release.js
       env:
+        ACTION_PATH: $${ github.action_path }}
         WORKSPACE: ${{ github.workspace }}
         VERSION: ${{ inputs.version }}
         BASE: ${{ inputs.base }}
