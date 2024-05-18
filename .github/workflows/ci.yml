@@ -16,7 +16,6 @@ jobs:
   test:
     name: TypeScript Tests
     runs-on: ubuntu-latest
-    needs: ['lint']
     steps:
       - name: Checkout
         id: checkout
