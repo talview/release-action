@@ -5,7 +5,7 @@ on:
       - main
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: "${{ github.workflow }}-${{ github.ref }}"
 
 jobs:
   run:
@@ -20,3 +20,5 @@ jobs:
         with:
           BOT_ID: ${{ vars.TALVIEW_BOT_ID }}
           BOT_KEY: ${{ secrets.TALVIEW_BOT_KEY }}
+          prefix: 'v'
+          VERSION: ${{ contains(github.event.head_commit.message, '[patch]') && 'patch' || 'minor' }}

@@ -15,6 +15,10 @@ inputs:
     description: 'branch to merge back code to (i.e. develop)'
     default: 'refs/heads/develop'
     required: false
+  prefix:
+    description: 'tag prefix'
+    default: ''
+    required: false
   assets:
     description: 'glob for assets to publish in release'
     required: false
@@ -61,4 +65,5 @@ runs:
         VERSION: ${{ inputs.version }}
         BASE: ${{ inputs.base }}
         ASSETS: ${{ inputs.assets }}
+        PREFIX: ${{ inputs.prefix }}
         GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
