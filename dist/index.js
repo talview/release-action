@@ -48244,7 +48244,7 @@ async function commit({ base, workspace }) {
     if (base) {
         await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     }
-    await ref(`tags/v${data.version}`, c.data.sha);
+    await ref(`tags/${process.env.PREFIX || ''}${data.version}`, c.data.sha);
     await createRelease(data.version);
     await ref(`${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     return c.data.sha;
@@ -48269,7 +48269,8 @@ async function ref(r, sha) {
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             ref: r,
-            sha
+            sha,
+            force: true
         });
     }
     else {
@@ -48313,8 +48314,9 @@ async function main_run() {
  * The entrypoint for the action.
  */
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-main_run();
+(async () => {
+    await main_run();
+})();
 
 })();
 
