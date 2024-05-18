@@ -56,7 +56,7 @@ export async function commit({ base, workspace }: { base: string; workspace: str
   if (base) {
     await ref(`${get(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
   }
-  await ref(`tags/v${data.version}`, c.data.sha)
+  await ref(`tags/${data.version}`, c.data.sha)
   await createRelease(data.version)
   await ref(`${get(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
   return c.data.sha
