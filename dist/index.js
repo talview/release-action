@@ -48244,7 +48244,7 @@ async function commit({ base, workspace }) {
     if (base) {
         await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     }
-    await ref(`tags/${process.env.PREFIX || ''}${data.version}`, c.data.sha);
+    await ref(`tags/${process.env.VERSION_PREFIX || ''}${data.version}`, c.data.sha);
     await createRelease(data.version);
     await ref(`${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
     return c.data.sha;
