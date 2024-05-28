@@ -35,8 +35,8 @@ export async function createRelease(version: string): Promise<void> {
   await octokit.rest.repos.createRelease({
     owner: github.context.repo.owner,
     repo: github.context.repo.repo,
-    tag_name: `v${version}`,
-    name: `Release ${version}`,
+    tag_name: `${process.env.VERSION_PREFIX || ''}${version}`,
+    name: `${process.env.VERSION_PREFIX || ''}${version}`,
     generate_release_notes: true
   })
 }
