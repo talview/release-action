@@ -82,8 +82,7 @@ export async function ref(r: string, sha: string): Promise<string> {
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       ref: r,
-      sha,
-      force: true
+      sha
     })
   } else {
     ret = await octokit.rest.git.createRef({
