@@ -58,7 +58,7 @@ runs:
       if: contains(github.actor,'bot') == false
       run: |
         cd ${WORKSPACE}
-        npm version ${VERSION}
+        npm version ${VERSION} --no-git-tag-version
         npx auto-changelog -t keepachangelog -p -u
         cd ${ACTION_PATH}
         node ${ACTION_PATH}/dist/index.js
