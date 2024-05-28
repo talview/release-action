@@ -7,6 +7,10 @@ branding:
   color: 'red'
 
 inputs:
+  FORCE_PUSH:
+    description: 'force push to update ref'
+    required: false
+    default: 'false'
   version:
     description: 'semver: major, minor or patch'
     required: false
@@ -64,5 +68,6 @@ runs:
         VERSION: ${{ inputs.version }}
         BASE: ${{ inputs.base }}
         ASSETS: ${{ inputs.assets }}
+        FORCE_PUSH: ${{ inputs.FORCE_PUSH }}
         VERSION_PREFIX: ${{ inputs.VERSION_PREFIX }}
         GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}

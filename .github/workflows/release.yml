@@ -33,4 +33,5 @@ jobs:
           BOT_ID: ${{ vars.TALVIEW_BOT_ID }}
           BOT_KEY: ${{ secrets.TALVIEW_BOT_KEY }}
           VERSION_PREFIX: 'v'
+          FORCE_PUSH: true,
           VERSION: ${{ contains(github.event.head_commit.message, '[patch]') && 'patch' || 'minor' }}
