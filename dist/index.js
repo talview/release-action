@@ -48270,7 +48270,7 @@ async function ref(r, sha) {
             repo: github.context.repo.repo,
             ref: r,
             sha,
-            force: true
+            force: !!process.env.FORCE_PUSH
         });
     }
     else {

@@ -11,11 +11,11 @@ inputs:
     description: 'force push to update ref'
     required: false
     default: 'false'
-  version:
+  VERSION:
     description: 'semver: major, minor or patch'
     required: false
     default: 'minor'
-  base:
+  BASE:
     description: 'branch to merge back code to (i.e. develop)'
     default: 'refs/heads/develop'
     required: false
@@ -23,7 +23,7 @@ inputs:
     description: 'tag prefix'
     default: ''
     required: false
-  assets:
+  ASSETS:
     description: 'glob for assets to publish in release'
     required: false
   BOT_ID:
@@ -65,9 +65,9 @@ runs:
       env:
         ACTION_PATH: ${{ github.action_path }}
         WORKSPACE: ${{ github.workspace }}
-        VERSION: ${{ inputs.version }}
-        BASE: ${{ inputs.base }}
-        ASSETS: ${{ inputs.assets }}
+        VERSION: ${{ inputs.VERSION }}
+        BASE: ${{ inputs.BASE }}
+        ASSETS: ${{ inputs.ASSETS }}
         FORCE_PUSH: ${{ inputs.FORCE_PUSH }}
         VERSION_PREFIX: ${{ inputs.VERSION_PREFIX }}
         GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
