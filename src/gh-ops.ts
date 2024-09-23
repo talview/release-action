@@ -52,14 +52,25 @@ export async function commit({ base, workspace }: { base: string; workspace: str
     parents: [github.context.sha],
     tree
   })
-
-  if (base) {
-    await ref(`${get(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
-  }
   await ref(`tags/${process.env.VERSION_PREFIX || ''}${data.version}`, c.data.sha)
   await createRelease(data.version)
   await ref(`${get(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha)
+  await raisePullRequest(data.version, base)
+
   return c.data.sha
+}
+export async function raisePullRequest(version: string, base?: string): Promise<string | void> {
+  if (!base) return
+  const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
+  await octokit.rest.pulls.create({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    title: `Release: ${process.env.VERSION_PREFIX || ''}${version}`,
+    head: base,
+    body: `Rebase Changelog and version bump`,
+    base: `${get(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`
+  })
+  return base
 }
 
 export async function ref(r: string, sha: string): Promise<string> {
@@ -76,14 +87,12 @@ export async function ref(r: string, sha: string): Promise<string> {
   } catch {
     // empty
   }
-
   if (res?.data?.url) {
     ret = await octokit.rest.git.updateRef({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       ref: r,
-      sha,
-      force: !!process.env.FORCE_PUSH
+      sha
     })
   } else {
     ret = await octokit.rest.git.createRef({

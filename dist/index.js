@@ -48241,13 +48241,25 @@ async function commit({ base, workspace }) {
         parents: [github.context.sha],
         tree
     });
-    if (base) {
-        await ref(`${(0,lodash.get)(base.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
-    }
     await ref(`tags/${process.env.VERSION_PREFIX || ''}${data.version}`, c.data.sha);
     await createRelease(data.version);
     await ref(`${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`, c.data.sha);
+    await raisePullRequest(data.version, base);
     return c.data.sha;
+}
+async function raisePullRequest(version, base) {
+    if (!base)
+        return;
+    const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
+    await octokit.rest.pulls.create({
+        owner: github.context.repo.owner,
+        repo: github.context.repo.repo,
+        title: `Release: ${process.env.VERSION_PREFIX || ''}${version}`,
+        head: base,
+        body: `Rebase Changelog and version bump`,
+        base: `${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`
+    });
+    return base;
 }
 async function ref(r, sha) {
     const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
@@ -48269,8 +48281,7 @@ async function ref(r, sha) {
             owner: github.context.repo.owner,
             repo: github.context.repo.repo,
             ref: r,
-            sha,
-            force: !!process.env.FORCE_PUSH
+            sha
         });
     }
     else {
