@@ -47,7 +47,7 @@ describe('action', () => {
     await main.run()
     expect(runMock).toHaveReturned()
 
-    // Verify that all of the core library functions were called correctly
+    // Verify that all the core library functions were called correctly
     expect(debugMock).toHaveBeenNthCalledWith(1, 'Waiting 500 milliseconds ...')
     expect(debugMock).toHaveBeenNthCalledWith(2, expect.stringMatching(timeRegex))
     expect(debugMock).toHaveBeenNthCalledWith(3, expect.stringMatching(timeRegex))
