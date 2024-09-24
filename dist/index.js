@@ -48250,15 +48250,16 @@ async function commit({ base, workspace }) {
 async function raisePullRequest(version, base) {
     if (!base)
         return;
-    const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '');
-    await octokit.rest.pulls.create({
-        owner: github.context.repo.owner,
-        repo: github.context.repo.repo,
-        title: `Release: ${process.env.VERSION_PREFIX || ''}${version}`,
-        head: base,
-        body: `Rebase Changelog and version bump`,
-        base: `${(0,lodash.get)(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`
-    });
+    console.log(github.context.ref);
+    // const octokit = github.getOctokit(process.env.GITHUB_TOKEN || '')
+    // await octokit.rest.pulls.create({
+    //   owner: github.context.repo.owner,
+    //   repo: github.context.repo.repo,
+    //   title: `Release: ${process.env.VERSION_PREFIX || ''}${version}`,
+    //   head: base,
+    //   body: `Rebase Changelog and version bump`,
+    //   base: `${get(github.context.ref.match(new RegExp('(heads)/([a-z]+)')), '0')}`
+    // })
     return base;
 }
 async function ref(r, sha) {
