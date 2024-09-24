@@ -1,6 +1,6 @@
 {
   "name": "@talview/release-action",
-  "description": "Talview release action",
+  "description": "talview release action",
   "version": "0.24.0",
   "author": "",
   "private": true,
