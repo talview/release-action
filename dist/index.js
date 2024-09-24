@@ -48256,9 +48256,9 @@ async function raisePullRequest(version, base) {
         owner: github.context.repo.owner,
         repo: github.context.repo.repo,
         title: `Release: ${process.env.VERSION_PREFIX || ''}${version}`,
-        head: base,
+        head: `${current}`,
         body: `Rebase Changelog and version bump`,
-        base: `${current}`
+        base
     });
     return base;
 }
