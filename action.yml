@@ -43,7 +43,7 @@ runs:
     - name: Generate a token
       if: contains(github.actor,'bot') == false
       id: generate-token
-      uses: actions/create-github-app-token@v1
+      uses: actions/create-github-app-token@v2
       with:
         app-id: ${{ inputs.BOT_ID }}
         private-key: ${{ inputs.BOT_KEY }}
